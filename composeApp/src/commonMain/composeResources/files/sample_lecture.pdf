@@ -1,0 +1,292 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier-Bold /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Symbol >>
+endobj
+5 0 obj
+<< /Length 453 >>
+stream
+0.080 0.110 0.190 rg 0 0 960 540 re f
+0.230 0.450 0.930 rg 0 0 14 540 re f
+BT /F2 14 Tf 0.550 0.680 1.000 rg 64 360 Td (MATH-302  /  LECTURE 04) Tj ET
+BT /F2 44 Tf 1.000 1.000 1.000 rg 64 300 Td (Integrals & Stokes' Theorem) Tj ET
+BT /F1 18 Tf 0.780 0.820 0.920 rg 64 260 Td (From line integrals to the generalized Stokes formula) Tj ET
+BT /F1 13 Tf 0.600 0.650 0.780 rg 64 90 Td (Budapest University of Technology and Economics  |  Fall Semester) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 1433 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (OVERVIEW) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Today's roadmap) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 2 / 9) Tj ET
+0.230 0.450 0.930 rg 52 355 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 350 Td (Recap: line integrals and conservative fields) Tj ET
+0.230 0.450 0.930 rg 52 322 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 317 Td (Green's theorem in the plane) Tj ET
+0.230 0.450 0.930 rg 52 289 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 284 Td (Surface integrals and flux) Tj ET
+0.230 0.450 0.930 rg 52 256 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 251 Td (Divergence \(Gauss\) theorem) Tj ET
+0.230 0.450 0.930 rg 52 223 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 218 Td (Differential forms and the exterior derivative) Tj ET
+0.230 0.450 0.930 rg 52 190 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 185 Td (Theorem 4.12: Generalized Stokes' theorem) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 1450 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (SECTION 4.1  LINE INTEGRALS) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Line integrals of vector fields) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 3 / 9) Tj ET
+0.230 0.450 0.930 rg 52 355 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 350 Td (For a curve C parametrized by r\(t\), a <= t <= b:) Tj ET
+0.230 0.450 0.930 rg 52 322 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 317 Td (Work = integral of F\(r\(t\)\) . r'\(t\) dt over [a, b]) Tj ET
+0.230 0.450 0.930 rg 52 289 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 284 Td (If F = grad f, the integral depends only on the endpoints) Tj ET
+0.230 0.450 0.930 rg 52 256 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 251 Td (Closed curve + conservative field  =>  integral is zero) Tj ET
+0.930 0.950 0.990 rg 48 188 864 44 re f
+BT /F3 15 Tf 0.080 0.110 0.190 rg 64 204 Td (Fundamental Theorem for line integrals:  f\(r\(b\)\) - f\(r\(a\)\)) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 1266 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (SECTION 4.2  PLANE) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Green's theorem) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 4 / 9) Tj ET
+0.230 0.450 0.930 rg 52 355 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 350 Td (Let D be a bounded region with positively oriented boundary C) Tj ET
+0.230 0.450 0.930 rg 52 322 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 317 Td (Circulation of F = \(P, Q\) around C equals the double integral) Tj ET
+0.230 0.450 0.930 rg 52 289 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 284 Td (of the scalar curl  dQ/dx - dP/dy  over D) Tj ET
+0.230 0.450 0.930 rg 52 256 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 251 Td (Special case k = 2 of the generalized Stokes theorem) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 1439 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (SECTION 4.3  SURFACES) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Flux and the divergence theorem) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 5 / 9) Tj ET
+0.230 0.450 0.930 rg 52 355 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 350 Td (Flux of F through an oriented surface S: integral of F . n dS) Tj ET
+0.230 0.450 0.930 rg 52 322 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 317 Td (Divergence theorem: outward flux through the boundary of a solid) Tj ET
+0.230 0.450 0.930 rg 52 289 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 284 Td (equals the triple integral of div F over the solid) Tj ET
+0.230 0.450 0.930 rg 52 256 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 251 Td (Physical reading: sources inside = net flow out) Tj ET
+0.230 0.450 0.930 rg 52 223 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 218 Td (Watch out: orientation of the normal n matters for the sign) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 1421 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (SECTION 4.3  EXTERIOR CALCULUS) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Differential forms) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 6 / 9) Tj ET
+0.230 0.450 0.930 rg 52 355 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 350 Td (A k-form eats k tangent vectors and returns a number) Tj ET
+0.230 0.450 0.930 rg 52 322 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 317 Td (Exterior derivative d maps k-forms to \(k+1\)-forms) Tj ET
+0.230 0.450 0.930 rg 52 289 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 284 Td (Nilpotency: d\(d omega\) = 0 for every form omega) Tj ET
+0.230 0.450 0.930 rg 52 256 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 251 Td (Closed forms \(d omega = 0\) vs exact forms \(omega = d eta\)) Tj ET
+0.230 0.450 0.930 rg 52 223 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 218 Td (de Rham cohomology measures closed-but-not-exact forms) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 15 0 R >>
+endobj
+17 0 obj
+<< /Length 1816 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (SECTION 4.3  EXTERIOR CALCULUS ON MANIFOLDS) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Theorem 4.12: Generalized Stokes' theorem) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 7 / 9) Tj ET
+0.930 0.950 0.990 rg 48 318 864 52 re f
+0.230 0.450 0.930 rg 48 318 4 52 re f
+BT /F2 12 Tf 0.230 0.450 0.930 rg 64 350 Td (Definition 4.1 \(Oriented smooth manifold with boundary\)) Tj ET
+BT /F1 13 Tf 0.100 0.120 0.180 rg 64 330 Td (Let Omega be a compact, smooth, oriented k-dimensional manifold with boundary dOmega.) Tj ET
+0.080 0.110 0.190 rg 48 160 864 140 re f
+BT /F2 11 Tf 0.550 0.680 1.000 rg 380 276 Td (GENERALIZED STOKES FORMULA) Tj ET
+BT 0.950 0.960 1.000 rg 330 210 Td /F4 40 Tf 0 Ts (Ú) Tj /F4 24 Tf -10 Ts (∂W) Tj /F4 40 Tf 0 Ts ( w  =  ) Tj /F4 40 Tf 0 Ts (Ú) Tj /F4 24 Tf -10 Ts (W) Tj /F2 40 Tf 0 Ts ( d) Tj /F4 40 Tf 0 Ts (w) Tj 0 Ts ET
+BT /F1 12 Tf 0.780 0.820 0.920 rg 200 176 Td (where omega is a compactly supported smooth \(k-1\)-form on Omega) Tj ET
+0.230 0.450 0.930 rg 52 129 6 6 re f
+BT /F1 15 Tf 0.100 0.120 0.180 rg 70 124 Td (Recovers FTC \(k = 1\), Green \(k = 2\) and Gauss \(k = 3\)) Tj ET
+0.230 0.450 0.930 rg 52 98 6 6 re f
+BT /F1 15 Tf 0.100 0.120 0.180 rg 70 93 Td (Boundary nilpotency: d\(dOmega\) is empty  <->  d\(d omega\) = 0) Tj ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 17 0 R >>
+endobj
+19 0 obj
+<< /Length 1314 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (SECTION 4.4  PRACTICE) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Worked examples) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 8 / 9) Tj ET
+0.230 0.450 0.930 rg 52 355 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 350 Td (Ex 1. Verify Green's theorem for F = \(-y, x\) on the unit disk) Tj ET
+0.230 0.450 0.930 rg 52 322 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 317 Td (Ex 2. Flux of F = \(x, y, z\) through the unit sphere \(answer: 4 pi\)) Tj ET
+0.230 0.450 0.930 rg 52 289 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 284 Td (Ex 3. Show the integral of d omega over a closed manifold is zero) Tj ET
+0.230 0.450 0.930 rg 52 256 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 251 Td (Ex 4. Laplacian of f as div\(grad f\): interpret on the boundary) Tj ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 19 0 R >>
+endobj
+21 0 obj
+<< /Length 1257 >>
+stream
+1.000 1.000 1.000 rg 0 0 960 540 re f
+0.080 0.110 0.190 rg 0 484 960 56 re f
+BT /F2 13 Tf 1.000 1.000 1.000 rg 32 514 Td (Budapest University of Technology and Economics) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 32 496 Td (MATH-302  Multivariable Calculus  |  Lecture 04: Integrals & Stokes' Theorem) Tj ET
+BT /F1 10 Tf 0.750 0.800 0.920 rg 810 506 Td (Prof. A. Kovacs) Tj ET
+BT /F2 11 Tf 0.230 0.450 0.930 rg 48 440 Td (WRAP-UP) Tj ET
+BT /F2 28 Tf 0.080 0.110 0.190 rg 48 404 Td (Summary & homework) Tj ET
+0.850 0.870 0.920 rg 48 34 864 1 re f
+BT /F1 9 Tf 0.380 0.420 0.520 rg 48 16 Td (Cold Lecture sample deck) Tj ET
+BT /F2 9 Tf 0.380 0.420 0.520 rg 830 16 Td (Slide 9 / 9) Tj ET
+0.230 0.450 0.930 rg 52 355 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 350 Td (One formula, many theorems: boundary integral = interior derivative) Tj ET
+0.230 0.450 0.930 rg 52 322 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 317 Td (Know which special case you are in \(k = 1, 2, 3\)) Tj ET
+0.230 0.450 0.930 rg 52 289 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 284 Td (Homework: problem set 4, exercises 3, 7, 11 \(due next Tuesday\)) Tj ET
+0.230 0.450 0.930 rg 52 256 6 6 re f
+BT /F1 17 Tf 0.100 0.120 0.180 rg 70 251 Td (Midterm 2 covers Sections 4.1 - 4.4) Tj ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 23 0 R /MediaBox [0 0 960 540] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 21 0 R >>
+endobj
+23 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R] /Count 9 >>
+endobj
+24 0 obj
+<< /Type /Catalog /Pages 23 0 R >>
+endobj
+25 0 obj
+<< /Title (Lecture 04: Integrals & Stokes' Theorem) /Author (Cold Lecture) >>
+endobj
+xref
+0 26
+0000000000 65535 f 
+0000000015 00000 n 
+0000000112 00000 n 
+0000000214 00000 n 
+0000000314 00000 n 
+0000000381 00000 n 
+0000000885 00000 n 
+0000001042 00000 n 
+0000002527 00000 n 
+0000002684 00000 n 
+0000004186 00000 n 
+0000004344 00000 n 
+0000005663 00000 n 
+0000005822 00000 n 
+0000007314 00000 n 
+0000007473 00000 n 
+0000008947 00000 n 
+0000009106 00000 n 
+0000010975 00000 n 
+0000011134 00000 n 
+0000012501 00000 n 
+0000012660 00000 n 
+0000013970 00000 n 
+0000014129 00000 n 
+0000014242 00000 n 
+0000014293 00000 n 
+trailer
+<< /Size 26 /Root 24 0 R /Info 25 0 R >>
+startxref
+14387
+%%EOF

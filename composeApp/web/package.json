@@ -1,0 +1,12 @@
+{
+  "name": "cold-lecture-web",
+  "version": "0.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "glue.mjs",
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "3.54.1-build1",
+    "pdfjs-dist": "6.5.438"
+  }
+}

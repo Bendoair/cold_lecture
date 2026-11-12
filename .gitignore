@@ -1,0 +1,51 @@
+# Gradle / Kotlin build output
+.gradle/
+build/
+**/build/
+.kotlin/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Kotlin/JS + Wasm package locks and node caches
+kotlin-js-store/
+node_modules/
+**/node_modules/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.fleet/
+out/
+
+# Local environment and secrets
+.env
+.env.*
+local.properties
+*.keystore
+*.jks
+commands.example
+
+
+# Desktop distributables
+*.exe
+*.msi
+*.dmg
+*.pkg
+*.deb
+*.rpm
+
+# Local runtime data
+*.db
+*.db-shm
+*.db-wal
+user-data/
+
+# Logs
+*.log
+hs_err_pid*
+
+# OS junk
+.DS_Store
+Thumbs.db
