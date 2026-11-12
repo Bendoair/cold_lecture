@@ -14,8 +14,11 @@ import dev.coldlecture.data.DATABASE_FILE_NAME
 import dev.coldlecture.platform.AppPlatform
 import dev.coldlecture.platform.DesktopDeckFiles
 import dev.coldlecture.platform.DesktopFocusPlatform
+import dev.coldlecture.resources.Res
+import dev.coldlecture.resources.app_icon
 import dev.coldlecture.ui.App
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.compose.resources.painterResource
 import java.awt.Frame
 import java.awt.event.WindowEvent
 import java.awt.event.WindowFocusListener
@@ -44,6 +47,7 @@ fun main() {
             onCloseRequest = { if (!focus.interceptClose()) exitApplication() },
             state = windowState,
             title = "Cold Lecture",
+            icon = painterResource(Res.drawable.app_icon),
             alwaysOnTop = focus.locked,
         ) {
             frameRef[0] = window

@@ -16,7 +16,7 @@ To find "where did we see that?" in a second, without opening a browser and losi
   - A slide jumps to that slide.
   - A note opens its deck at the right slide.
   - A term opens it in the Dictionary panel.
-- Press **Enter** to open the first result, or **Esc** to close the search.
+- Press **Enter** to open the first result, **Esc** to close the search (from the search field or anywhere in the shell), or click outside the results to dismiss.
 
 ## What it is not
 

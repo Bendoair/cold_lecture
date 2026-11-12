@@ -9,6 +9,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -48,6 +50,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import dev.coldlecture.data.Repositories
+import dev.coldlecture.data.ThemePreference
 import dev.coldlecture.notes.NoteEditorState
 import dev.coldlecture.search.LocalSearch
 import dev.coldlecture.search.SearchHit
@@ -79,8 +82,12 @@ fun LectureShell(
     session: FocusSession,
     notesEditor: NoteEditorState,
     search: LocalSearch,
-    dark: Boolean,
-    onToggleDark: () -> Unit,
+    theme: ThemePreference,
+    onThemeChange: (ThemePreference) -> Unit,
+    interactivity: Int,
+    onInteractivityChange: (Int) -> Unit,
+    animals: Boolean,
+    onAnimalsChange: (Boolean) -> Unit,
 ) {
     val decks by repos.decks.decks.collectAsState(emptyList())
     val entries by repos.dictionary.entries.collectAsState(emptyList())
@@ -142,6 +149,10 @@ fun LectureShell(
                         runCatching { searchFocus.requestFocus() }
                         true
                     }
+                    event.key == Key.Escape && search.open -> {
+                        search.clear()
+                        true
+                    }
                     event.key == Key.Escape && todosOpen -> {
                         todosOpen = false
                         true
@@ -152,6 +163,7 @@ fun LectureShell(
     ) {
         val compact = maxWidth < CompactWidth
         val sidebarVisible = sidebarPreference ?: !compact
+        val searchDismissible = search.open
 
         fun toggleNotes() {
             notesExpanded = !notesExpanded
@@ -189,8 +201,12 @@ fun LectureShell(
                 compact = compact,
                 sidebarVisible = sidebarVisible,
                 onToggleSidebar = { sidebarPreference = !sidebarVisible },
-                dark = dark,
-                onToggleDark = onToggleDark,
+                animals = animals,
+                theme = theme,
+                onThemeChange = onThemeChange,
+                interactivity = interactivity,
+                onInteractivityChange = onInteractivityChange,
+                onAnimalsChange = onAnimalsChange,
             )
             Row(Modifier.weight(1f).fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Box(Modifier.weight(1f).fillMaxHeight()) {
@@ -208,6 +224,18 @@ fun LectureShell(
                             shortcutLabel = "Alt+K",
                             onSubmitFirst = { search.results.firstOrNull()?.let(::openHit) },
                             modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    if (searchDismissible) {
+                        Box(
+                            Modifier
+                                .matchParentSize()
+                                .padding(bottom = 54.dp)
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = search::clear,
+                                ),
                         )
                     }
                     SearchResultsPopup(

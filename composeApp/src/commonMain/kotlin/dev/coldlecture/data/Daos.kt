@@ -24,6 +24,9 @@ interface DeckDao {
 
     @Query("UPDATE decks SET pageCount = :pageCount WHERE id = :deckId")
     suspend fun setPageCount(deckId: String, pageCount: Int)
+
+    @Query("DELETE FROM decks WHERE id = :deckId")
+    suspend fun delete(deckId: String)
 }
 
 @Dao
@@ -39,6 +42,9 @@ interface NoteDao {
 
     @Query("DELETE FROM slide_notes WHERE deckId = :deckId AND pageIndex = :pageIndex")
     suspend fun delete(deckId: String, pageIndex: Int)
+
+    @Query("DELETE FROM slide_notes WHERE deckId = :deckId")
+    suspend fun deleteForDeck(deckId: String)
 
     @Query("SELECT * FROM slide_notes WHERE text LIKE '%' || :query || '%' ORDER BY deckId, pageIndex LIMIT :limit")
     suspend fun search(query: String, limit: Int): List<SlideNote>
@@ -66,6 +72,9 @@ interface DictionaryDao {
 
     @Query("SELECT * FROM concept_links")
     fun observeLinks(): Flow<List<ConceptLink>>
+
+    @Query("DELETE FROM concept_links WHERE fromId = :id OR toId = :id")
+    suspend fun deleteLinksFor(id: Long)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLink(link: ConceptLink)

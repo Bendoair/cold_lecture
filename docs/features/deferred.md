@@ -20,11 +20,11 @@ A small companion panel that reacts to the session. It can celebrate a long focu
 
 ## Interactivity meter
 
-A visible gauge of how engaged the session has been: notes written, dictionary lookups and links made, todos captured, focus continuity, slides revisited. It gives the student honest feedback on their own participation during a lecture ("mostly listening" versus "actively working through it") and shows how that changes across lectures.
+A visible gauge of how engaged the session has been: notes written, dictionary lookups and links made, todos captured, focus continuity, slides revisited. It gives the student honest feedback on their own participation during a lecture ("mostly listening" versus "actively working through it") and shows how that changes across lectures. Settings already store an interactivity checkpoint (default 50%) for when the meter appears; the meter UI itself is still deferred.
 
 ## Header and dead-space companions
 
-Small decorative creatures (dogs, cats and similar), in the spirit of Google Colab's corgis and kittens, that idle in the header or other unused parts of the layout. They are pure low-stakes delight: they make long sessions feel friendlier, can be switched off, and never compete with the slide for attention. They are not a study tool.
+Small decorative creatures (dogs, cats and similar), in the spirit of Google Colab's corgis and kittens, that idle in the header or other unused parts of the layout. They are pure low-stakes delight: they make long sessions feel friendlier, can be switched off in Settings, and never compete with the slide for attention. They are not a study tool. A first companion already appears in the header when Animals is enabled; richer creatures come later.
 
 ## Slide annotations
 

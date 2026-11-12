@@ -5,12 +5,17 @@ import kotlin.time.Clock
 
 internal fun nowMillis(): Long = Clock.System.now().toEpochMilliseconds()
 
-class DeckRepository(private val dao: DeckDao) {
+class DeckRepository(private val dao: DeckDao, private val notes: NoteDao) {
     val decks: Flow<List<LectureDeck>> = dao.observeAll()
 
     suspend fun add(deck: LectureDeck) = dao.upsert(deck)
     suspend fun setLastPage(deckId: String, page: Int) = dao.setLastPage(deckId, page)
     suspend fun setPageCount(deckId: String, pageCount: Int) = dao.setPageCount(deckId, pageCount)
+
+    suspend fun delete(deckId: String) {
+        notes.deleteForDeck(deckId)
+        dao.delete(deckId)
+    }
 }
 
 class NoteRepository(private val dao: NoteDao) {
@@ -56,7 +61,10 @@ class DictionaryRepository(private val dao: DictionaryDao) {
         return DictSaveResult.Saved(id)
     }
 
-    suspend fun delete(id: Long) = dao.delete(id)
+    suspend fun delete(id: Long) {
+        dao.deleteLinksFor(id)
+        dao.delete(id)
+    }
 
     suspend fun link(a: Long, b: Long) {
         if (a != b) dao.insertLink(edge(a, b))
@@ -82,18 +90,45 @@ class TodoRepository(private val dao: TodoDao) {
     suspend fun clearCompleted() = dao.clearCompleted()
 }
 
+enum class ThemePreference(val storage: String) {
+    System("system"),
+    Light("light"),
+    Dark("dark"),
+    ;
+
+    companion object {
+        fun fromStorage(value: String?): ThemePreference = entries.firstOrNull { it.storage == value }
+            ?: when (value) {
+                "true" -> Dark
+                "false" -> Light
+                else -> System
+            }
+    }
+}
+
 class SettingsRepository(private val dao: SettingsDao) {
     suspend fun get(key: String): String? = dao.get(key)
     suspend fun put(key: String, value: String) = dao.put(AppSetting(key, value))
 
+    suspend fun themePreference(): ThemePreference = ThemePreference.fromStorage(get(THEME_PREFERENCE) ?: get(DARK_THEME))
+
+    suspend fun interactivityPercent(): Int =
+        get(INTERACTIVITY)?.toIntOrNull()?.coerceIn(0, 100) ?: DEFAULT_INTERACTIVITY
+
+    suspend fun animalsEnabled(): Boolean = get(ANIMALS) != "false"
+
     companion object {
         const val DARK_THEME = "dark_theme"
+        const val THEME_PREFERENCE = "theme_preference"
         const val ACTIVE_DECK = "active_deck"
+        const val INTERACTIVITY = "interactivity_percent"
+        const val ANIMALS = "animals_enabled"
+        const val DEFAULT_INTERACTIVITY = 50
     }
 }
 
 class Repositories(database: AppDatabase) {
-    val decks = DeckRepository(database.deckDao())
+    val decks = DeckRepository(database.deckDao(), database.noteDao())
     val notes = NoteRepository(database.noteDao())
     val dictionary = DictionaryRepository(database.dictionaryDao())
     val todos = TodoRepository(database.todoDao())

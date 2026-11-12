@@ -13,6 +13,7 @@ external fun pdfClose(handle: Int)
 
 external fun pickPdfFile(): Promise<JsString?>
 external fun importPickedFile(deckId: String): Promise<JsNumber>
+external fun deleteStoredDeck(deckId: String): Promise<JsAny?>
 
 external fun setLockActive(active: Boolean)
 external fun requestFullscreen()

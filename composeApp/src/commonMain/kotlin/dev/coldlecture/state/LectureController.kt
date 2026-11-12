@@ -135,6 +135,28 @@ class LectureController(
         }
     }
 
+    fun removeDeck(deck: LectureDeck, remaining: List<LectureDeck>) {
+        scope.launch {
+            val wasActive = activeDeck?.id == deck.id
+            if (wasActive) {
+                textJob?.cancel()
+                document?.close()
+                document = null
+                renderCache.clear()
+                pageTexts.clear()
+                activeDeck = null
+                page = 0
+                error = null
+            }
+            runCatching { deckFiles.deleteStored(deck.id) }
+            repos.decks.delete(deck.id)
+            if (wasActive) {
+                val next = remaining.firstOrNull { it.id != deck.id }
+                if (next != null) openDeck(next) else repos.settings.put(SettingsRepository.ACTIVE_DECK, "")
+            }
+        }
+    }
+
     private suspend fun extractTexts(handle: PdfDocumentHandle) {
         for (i in 0 until handle.pageCount) {
             if (document !== handle) return

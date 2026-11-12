@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
@@ -14,23 +15,29 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +54,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -55,9 +63,11 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.coldlecture.data.LectureDeck
 import dev.coldlecture.state.LectureController
 import dev.coldlecture.ui.components.IconAction
@@ -80,7 +90,9 @@ fun SlideHeader(
     modifier: Modifier = Modifier,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
+    var filter by remember { mutableStateOf("") }
     val deck = controller.activeDeck
+    val colors = Lecture.colors
     Row(
         modifier.padding(horizontal = 14.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -89,45 +101,47 @@ fun SlideHeader(
         MonoLabel("Slide deck")
         Box(Modifier.weight(1f, fill = false)) {
             Row(
-                Modifier.clip(RoundedCornerShape(6.dp)).clickable { menuOpen = true }.padding(horizontal = 6.dp, vertical = 4.dp),
+                Modifier.clip(RoundedCornerShape(6.dp)).clickable {
+                    filter = ""
+                    menuOpen = true
+                }.padding(horizontal = 6.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     deck?.title ?: "No deck",
                     style = MaterialTheme.typography.titleSmall,
-                    color = Lecture.colors.accent,
+                    color = colors.accent,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.widthIn(max = 420.dp),
                 )
-                androidx.compose.material3.Icon(
+                Icon(
                     Icons.Default.KeyboardArrowDown,
                     contentDescription = "Switch deck",
-                    tint = Lecture.colors.muted,
+                    tint = colors.muted,
                     modifier = Modifier.size(18.dp),
                 )
             }
-            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                decks.forEach { item ->
-                    DropdownMenuItem(
-                        text = {
-                            Column {
-                                Text(item.title, style = MaterialTheme.typography.bodyMedium, fontWeight = if (item.id == deck?.id) FontWeight.SemiBold else FontWeight.Normal)
-                                Text("${item.courseCode} · ${item.pageCount} slides", style = MaterialTheme.typography.labelSmall, color = Lecture.colors.muted)
-                            }
-                        },
-                        onClick = {
-                            menuOpen = false
-                            controller.openDeck(item)
-                        },
-                    )
-                }
-                HorizontalDivider(color = Lecture.colors.hairline)
-                DropdownMenuItem(
-                    text = { Text(if (controller.importing) "Importing…" else "Import PDF…", style = MaterialTheme.typography.bodyMedium) },
-                    leadingIcon = { androidx.compose.material3.Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp)) },
-                    enabled = !controller.importing,
-                    onClick = {
+            DropdownMenu(
+                expanded = menuOpen,
+                onDismissRequest = { menuOpen = false },
+                modifier = Modifier.widthIn(min = 320.dp, max = 420.dp),
+            ) {
+                DeckPickerContent(
+                    decks = decks,
+                    activeId = deck?.id,
+                    filter = filter,
+                    onFilterChange = { filter = it },
+                    importing = controller.importing,
+                    onSelect = {
+                        menuOpen = false
+                        controller.openDeck(it)
+                    },
+                    onRemove = {
+                        controller.removeDeck(it, decks)
+                        if (decks.size <= 1) menuOpen = false
+                    },
+                    onImport = {
                         menuOpen = false
                         controller.importDeck()
                     },
@@ -152,12 +166,149 @@ fun SlideHeader(
         Text(
             "${(zoom * 100).toInt()}%",
             style = MaterialTheme.typography.labelSmall,
-            color = Lecture.colors.muted,
+            color = colors.muted,
             modifier = Modifier.widthIn(min = 34.dp),
         )
         ZoomButton("+", "Zoom in", enabled = zoom < MAX_ZOOM) { onZoomChange((zoom + 0.25f).coerceAtMost(MAX_ZOOM)) }
         IconAction(Icons.Default.Refresh, "Fit to screen", onClick = { onZoomChange(MIN_ZOOM) }, enabled = zoom != MIN_ZOOM)
         IconAction(Icons.Default.Create, "Annotations (coming later)", onClick = {}, enabled = false)
+    }
+}
+
+@Composable
+private fun DeckPickerContent(
+    decks: List<LectureDeck>,
+    activeId: String?,
+    filter: String,
+    onFilterChange: (String) -> Unit,
+    importing: Boolean,
+    onSelect: (LectureDeck) -> Unit,
+    onRemove: (LectureDeck) -> Unit,
+    onImport: () -> Unit,
+) {
+    val colors = Lecture.colors
+    val q = filter.trim()
+    val filtered = remember(decks, q) {
+        if (q.isEmpty()) decks
+        else decks.filter {
+            it.title.contains(q, ignoreCase = true) ||
+                it.courseCode.contains(q, ignoreCase = true) ||
+                it.courseTitle.contains(q, ignoreCase = true)
+        }
+    }
+    val groups = remember(filtered) {
+        filtered.groupBy { it.courseCode.ifBlank { "Uncategorized" } }
+            .toList()
+            .sortedBy { it.first.lowercase() }
+    }
+
+    Column(Modifier.width(360.dp).padding(horizontal = 8.dp, vertical = 6.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(colors.panelRaised)
+                .border(1.dp, colors.hairline, RoundedCornerShape(8.dp))
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(Icons.Default.Search, contentDescription = null, tint = colors.muted, modifier = Modifier.size(15.dp))
+            val style = TextStyle(fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
+            BasicTextField(
+                value = filter,
+                onValueChange = onFilterChange,
+                singleLine = true,
+                textStyle = style,
+                cursorBrush = SolidColor(colors.accent),
+                modifier = Modifier.weight(1f),
+                decorationBox = { inner ->
+                    if (filter.isEmpty()) {
+                        Text("Search decks…", style = style.copy(color = colors.muted))
+                    }
+                    inner()
+                },
+            )
+        }
+        Column(Modifier.fillMaxWidth().heightIn(max = 320.dp).verticalScroll(rememberScrollState()).padding(top = 6.dp)) {
+            if (groups.isEmpty()) {
+                Text(
+                    if (decks.isEmpty()) "No decks yet." else "No decks match \"$q\".",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colors.muted,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
+                )
+            } else {
+                groups.forEach { (course, items) ->
+                    val courseTitle = items.firstOrNull()?.courseTitle.orEmpty()
+                    MonoLabel(
+                        if (courseTitle.isBlank()) course else "$course · $courseTitle",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                    )
+                    items.forEach { item ->
+                        DeckPickerRow(
+                            item = item,
+                            selected = item.id == activeId,
+                            onSelect = { onSelect(item) },
+                            onRemove = { onRemove(item) },
+                        )
+                    }
+                }
+            }
+        }
+        HorizontalDivider(color = colors.hairline, modifier = Modifier.padding(vertical = 6.dp))
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(enabled = !importing, onClick = onImport)
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(Icons.Default.Add, contentDescription = null, tint = colors.accent, modifier = Modifier.size(18.dp))
+            Text(
+                if (importing) "Importing…" else "Import PDF…",
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (importing) colors.muted else MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DeckPickerRow(
+    item: LectureDeck,
+    selected: Boolean,
+    onSelect: () -> Unit,
+    onRemove: () -> Unit,
+) {
+    val colors = Lecture.colors
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(if (selected) colors.accentSoft else androidx.compose.ui.graphics.Color.Transparent)
+            .clickable(onClick = onSelect)
+            .padding(start = 8.dp, end = 2.dp, top = 4.dp, bottom = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                item.title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                color = if (selected) colors.accent else MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                "${item.pageCount} slides",
+                style = MaterialTheme.typography.labelSmall,
+                color = colors.muted,
+            )
+        }
+        IconAction(Icons.Default.Delete, "Remove ${item.title}", onClick = onRemove, size = 28.dp)
     }
 }
 

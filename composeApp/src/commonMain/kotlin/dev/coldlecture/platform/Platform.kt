@@ -20,6 +20,9 @@ interface DeckFiles {
 
     /** Shows the platform picker and stores the chosen PDF under [deckId]; null when cancelled. */
     suspend fun pickAndStore(deckId: String): ImportedDeck?
+
+    /** Removes stored PDF bytes for an imported deck; no-op when nothing is stored. */
+    suspend fun deleteStored(deckId: String)
 }
 
 enum class LockStrength(val label: String) {

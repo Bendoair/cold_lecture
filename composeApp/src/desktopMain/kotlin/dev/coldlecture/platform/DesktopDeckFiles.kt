@@ -45,6 +45,10 @@ class DesktopDeckFiles(
         }
     }
 
+    override suspend fun deleteStored(deckId: String) {
+        withContext(Dispatchers.IO) { deckFile(deckId).delete() }
+    }
+
     private fun deckFile(deckId: String): File = File(decksDir.apply { mkdirs() }, "$deckId.pdf")
 }
 

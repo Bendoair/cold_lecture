@@ -26,6 +26,10 @@ class WebDeckFiles : DeckFiles {
         val pageCount = importPickedFile(deckId).await<JsNumber>().toInt()
         return ImportedDeck(fileName = fileName, pageCount = pageCount)
     }
+
+    override suspend fun deleteStored(deckId: String) {
+        deleteStoredDeck(deckId).await<JsAny?>()
+    }
 }
 
 private class PdfJsDocument(private val handle: Int) : PdfDocumentHandle {

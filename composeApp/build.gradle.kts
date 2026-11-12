@@ -97,6 +97,16 @@ compose.desktop {
             packageName = "ColdLecture"
             packageVersion = "1.0.0"
             javaHome = jdk21Home
+            linux {
+                iconFile.set(project.file("icon/icon.png"))
+            }
+            windows {
+                iconFile.set(project.file("icon/icon.ico"))
+            }
+            macOS {
+                // PNG works as a source for the packaging toolchain on CI/mac hosts.
+                iconFile.set(project.file("icon/icon.png"))
+            }
         }
     }
 }

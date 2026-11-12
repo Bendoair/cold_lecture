@@ -28,15 +28,19 @@ class RepositoriesTest {
     @AfterTest
     fun tearDown() = database.close()
 
-    @Test
-    fun seedRunsOnceAndPopulatesEverything() = runTest {
-        seedIfEmpty(database)
-        seedIfEmpty(database)
-        assertEquals(1, repos.decks.decks.first().size)
-        assertEquals(7, repos.dictionary.entries.first().size)
-        assertEquals(7, repos.dictionary.links.first().size)
-        assertEquals(3, repos.todos.todos.first().size)
-        assertTrue(repos.notes.load(SAMPLE_DECK_ID, 6).contains("Laplace"))
+    private suspend fun insertSampleDeck() {
+        repos.decks.add(
+            LectureDeck(
+                id = SAMPLE_DECK_ID,
+                title = "Sample",
+                courseCode = "MAT-304",
+                courseTitle = "Calc",
+                source = DeckSource.BUNDLED,
+                pageCount = 9,
+                createdAt = 1L,
+            ),
+        )
+        repos.notes.save(SAMPLE_DECK_ID, 6, "Laplace note")
     }
 
     @Test
@@ -90,6 +94,7 @@ class RepositoriesTest {
         repos.dictionary.link(a, b)
         repos.dictionary.delete(a)
         assertTrue(repos.dictionary.links.first().isEmpty())
+        assertEquals(listOf("B"), repos.dictionary.entries.first().map { it.term })
     }
 
     @Test
@@ -114,8 +119,26 @@ class RepositoriesTest {
     }
 
     @Test
+    fun themePreferenceMigratesLegacyDarkFlag() = runTest {
+        assertEquals(ThemePreference.System, repos.settings.themePreference())
+        repos.settings.put(SettingsRepository.DARK_THEME, "true")
+        assertEquals(ThemePreference.Dark, repos.settings.themePreference())
+        repos.settings.put(SettingsRepository.THEME_PREFERENCE, ThemePreference.Light.storage)
+        assertEquals(ThemePreference.Light, repos.settings.themePreference())
+    }
+
+    @Test
+    fun deckDeleteRemovesNotes() = runTest {
+        insertSampleDeck()
+        assertTrue(repos.notes.load(SAMPLE_DECK_ID, 6).isNotBlank())
+        repos.decks.delete(SAMPLE_DECK_ID)
+        assertTrue(repos.decks.decks.first().isEmpty())
+        assertEquals("", repos.notes.load(SAMPLE_DECK_ID, 6))
+    }
+
+    @Test
     fun deckLastPagePersists() = runTest {
-        seedIfEmpty(database)
+        insertSampleDeck()
         repos.decks.setLastPage(SAMPLE_DECK_ID, 4)
         assertEquals(4, repos.decks.decks.first().single().lastPage)
     }

@@ -9,20 +9,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -90,60 +93,20 @@ fun DictionaryBody(
 ) {
     val scope = rememberCoroutineScope()
     val selected = entries.firstOrNull { it.id == state.selectedId }
-    Column(modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        when {
-            state.creating || state.editing != null -> EntryForm(
-                initial = state.editing,
-                prefillTerm = state.draftTerm,
-                onCancel = {
-                    state.creating = false
-                    state.editing = null
-                },
-                onSave = { term, tag, definition, onError ->
-                    scope.launch {
-                        val existing = state.editing
-                        val result = if (existing != null) {
-                            repository.update(existing.id, term, definition, tag)
-                        } else {
-                            repository.create(term, definition, tag)
-                        }
-                        when (result) {
-                            is DictSaveResult.Saved -> {
-                                state.selectedId = result.id
-                                state.creating = false
-                                state.editing = null
-                            }
-                            DictSaveResult.DuplicateTerm -> onError("\"${term.trim()}\" is already in your dictionary.")
-                            DictSaveResult.EmptyTerm -> onError("A term needs a name.")
-                        }
-                    }
-                },
-            )
-            selected != null -> EntryDetail(
-                entry = selected,
-                entries = entries,
-                linked = linkedIds(selected.id, links),
-                onBack = { state.selectedId = null },
-                onOpen = { state.selectedId = it },
-                onEdit = { state.editing = selected },
-                onDelete = {
-                    scope.launch {
-                        repository.delete(selected.id)
-                        state.selectedId = null
-                    }
-                },
-                onLink = { other -> scope.launch { repository.link(selected.id, other) } },
-                onUnlink = { other -> scope.launch { repository.unlink(selected.id, other) } },
-            )
-        }
-
+    val query = state.filter.trim()
+    val visible = if (query.isEmpty()) entries else entries.filter {
+        it.term.contains(query, ignoreCase = true) || it.tag.contains(query, ignoreCase = true)
+    }
+    Column(
+        modifier.fillMaxSize().padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
         FilterField(state.filter, onChange = { state.filter = it })
-        val query = state.filter.trim()
-        val visible = if (query.isEmpty()) entries else entries.filter {
-            it.term.contains(query, ignoreCase = true) || it.tag.contains(query, ignoreCase = true)
-        }
         if (visible.isEmpty()) {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Column(
+                Modifier.weight(1f).fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
                 Text(
                     if (entries.isEmpty()) "Your dictionary is empty." else "No term matches \"$query\".",
                     style = MaterialTheme.typography.bodySmall,
@@ -154,7 +117,7 @@ fun DictionaryBody(
                 }
             }
         } else {
-            LazyColumn(Modifier.weight(1f, fill = false).heightIn(max = 520.dp)) {
+            LazyColumn(Modifier.weight(1f).fillMaxWidth()) {
                 items(visible, key = { it.id }) { entry ->
                     TermRow(
                         entry = entry,
@@ -163,8 +126,62 @@ fun DictionaryBody(
                         onClick = {
                             state.creating = false
                             state.editing = null
-                            state.selectedId = entry.id
+                            state.selectedId = if (state.selectedId == entry.id) null else entry.id
                         },
+                    )
+                }
+            }
+        }
+
+        when {
+            state.creating || state.editing != null -> {
+                Box(Modifier.fillMaxWidth().heightIn(max = 280.dp).verticalScroll(rememberScrollState())) {
+                    EntryForm(
+                        initial = state.editing,
+                        prefillTerm = state.draftTerm,
+                        onCancel = {
+                            state.creating = false
+                            state.editing = null
+                        },
+                        onSave = { term, tag, definition, onError ->
+                            scope.launch {
+                                val existing = state.editing
+                                val result = if (existing != null) {
+                                    repository.update(existing.id, term, definition, tag)
+                                } else {
+                                    repository.create(term, definition, tag)
+                                }
+                                when (result) {
+                                    is DictSaveResult.Saved -> {
+                                        state.selectedId = result.id
+                                        state.creating = false
+                                        state.editing = null
+                                    }
+                                    DictSaveResult.DuplicateTerm -> onError("\"${term.trim()}\" is already in your dictionary.")
+                                    DictSaveResult.EmptyTerm -> onError("A term needs a name.")
+                                }
+                            }
+                        },
+                    )
+                }
+            }
+            selected != null -> {
+                Box(Modifier.fillMaxWidth().heightIn(max = 280.dp).verticalScroll(rememberScrollState())) {
+                    EntryDetail(
+                        entry = selected,
+                        entries = entries,
+                        linked = linkedIds(selected.id, links),
+                        onBack = { state.selectedId = null },
+                        onOpen = { state.selectedId = it },
+                        onEdit = { state.editing = selected },
+                        onDelete = {
+                            scope.launch {
+                                repository.delete(selected.id)
+                                state.selectedId = null
+                            }
+                        },
+                        onLink = { other -> scope.launch { repository.link(selected.id, other) } },
+                        onUnlink = { other -> scope.launch { repository.unlink(selected.id, other) } },
                     )
                 }
             }

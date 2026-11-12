@@ -14,8 +14,6 @@ Lectures build on earlier concepts. The dictionary is the student's own glossary
 
 Term names are unique regardless of capitalisation, so the glossary does not end up with *limit* and *Limit* as separate entries.
 
-The app ships with a small starter glossary (function, limit, differential, Laplacian, kernel, exterior derivative, Stokes' theorem) that matches the sample deck.
-
 ## Relationship to the mindmap
 
 The links between terms form a graph. A visual **mindmap** of that graph is planned as its own view (the *Mindmap* toggle in the top bar is visible but not active yet). Any links made today will appear there. See [deferred features](deferred.md#mindmap-graph).

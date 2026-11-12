@@ -1,6 +1,7 @@
 package dev.coldlecture.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.coldlecture.data.Repositories
 import dev.coldlecture.data.SettingsRepository
-import dev.coldlecture.data.seedIfEmpty
+import dev.coldlecture.data.ThemePreference
 import dev.coldlecture.notes.NoteEditorState
 import dev.coldlecture.notes.NoteStore
 import dev.coldlecture.platform.AppPlatform
@@ -43,12 +45,21 @@ fun App(platform: AppPlatform) {
     val scope = rememberCoroutineScope()
     val repos = remember { Repositories(platform.database) }
     var startup by remember { mutableStateOf<Startup>(Startup.Loading) }
-    var dark by remember { mutableStateOf(false) }
+    var theme by remember { mutableStateOf(ThemePreference.System) }
+    var interactivity by remember { mutableIntStateOf(SettingsRepository.DEFAULT_INTERACTIVITY) }
+    var animals by remember { mutableStateOf(true) }
+    val systemDark = isSystemInDarkTheme()
+    val dark = when (theme) {
+        ThemePreference.System -> systemDark
+        ThemePreference.Light -> false
+        ThemePreference.Dark -> true
+    }
 
     LaunchedEffect(Unit) {
         startup = try {
-            seedIfEmpty(platform.database)
-            dark = repos.settings.get(SettingsRepository.DARK_THEME) == "true"
+            theme = repos.settings.themePreference()
+            interactivity = repos.settings.interactivityPercent()
+            animals = repos.settings.animalsEnabled()
             Startup.Ready
         } catch (t: Throwable) {
             Startup.Failed(t.message ?: t::class.simpleName ?: "Unknown error")
@@ -94,10 +105,20 @@ fun App(platform: AppPlatform) {
                     session = session,
                     notesEditor = notesEditor,
                     search = search,
-                    dark = dark,
-                    onToggleDark = {
-                        dark = !dark
-                        scope.launch { repos.settings.put(SettingsRepository.DARK_THEME, dark.toString()) }
+                    theme = theme,
+                    onThemeChange = { next ->
+                        theme = next
+                        scope.launch { repos.settings.put(SettingsRepository.THEME_PREFERENCE, next.storage) }
+                    },
+                    interactivity = interactivity,
+                    onInteractivityChange = { next ->
+                        interactivity = next
+                        scope.launch { repos.settings.put(SettingsRepository.INTERACTIVITY, next.toString()) }
+                    },
+                    animals = animals,
+                    onAnimalsChange = { next ->
+                        animals = next
+                        scope.launch { repos.settings.put(SettingsRepository.ANIMALS, next.toString()) }
                     },
                 )
             }
