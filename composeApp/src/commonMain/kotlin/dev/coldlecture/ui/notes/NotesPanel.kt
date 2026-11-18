@@ -180,17 +180,30 @@ fun MarkdownPreview(text: String, modifier: Modifier = Modifier) {
                         1 -> MaterialTheme.typography.titleMedium
                         else -> MaterialTheme.typography.titleSmall
                     },
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(top = 4.dp),
                 )
                 is MdBlock.Bullet -> Row {
                     Text("•", style = MaterialTheme.typography.bodyMedium, color = colors.accent, modifier = Modifier.width(14.dp))
-                    Text(block.spans.toAnnotated(mono, colors.accentSoft), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        block.spans.toAnnotated(mono, colors.accentSoft),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 }
                 is MdBlock.Numbered -> Row {
                     Text("${block.number}.", style = MaterialTheme.typography.bodyMedium, color = colors.accent, modifier = Modifier.width(22.dp))
-                    Text(block.spans.toAnnotated(mono, colors.accentSoft), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        block.spans.toAnnotated(mono, colors.accentSoft),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 }
-                is MdBlock.Paragraph -> Text(block.spans.toAnnotated(mono, colors.accentSoft), style = MaterialTheme.typography.bodyMedium)
+                is MdBlock.Paragraph -> Text(
+                    block.spans.toAnnotated(mono, colors.accentSoft),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 MdBlock.Blank -> Box(Modifier.size(6.dp))
             }
         }

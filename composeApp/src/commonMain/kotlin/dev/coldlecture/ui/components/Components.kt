@@ -150,6 +150,7 @@ fun CollapsibleSection(
             Text(
                 title,
                 style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(start = 8.dp),
                 maxLines = 1,
             )

@@ -16,4 +16,4 @@ Term names are unique regardless of capitalisation, so the glossary does not end
 
 ## Relationship to the mindmap
 
-The links between terms form a graph. A visual **mindmap** of that graph is planned as its own view (the *Mindmap* toggle in the top bar is visible but not active yet). Any links made today will appear there. See [deferred features](deferred.md#mindmap-graph).
+The links between terms form a graph. The **Mindmap** toggle in the top bar opens a visual map of that graph (pan/zoom, tag filters, click a node to open it here). See [mindmap](mindmap.md).

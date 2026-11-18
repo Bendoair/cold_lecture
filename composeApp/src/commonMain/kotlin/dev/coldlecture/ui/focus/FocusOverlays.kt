@@ -108,6 +108,7 @@ private fun AwayCard(session: FocusSession) {
         Text(
             if (session.awayReason == AwayReason.FullscreenExited) "Fullscreen was closed" else "You stepped away",
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
             formatClock(session.awayMillis),
@@ -153,7 +154,11 @@ private fun ExitChallengeCard(session: FocusSession) {
 
     OverlayCard {
         MonoLabel("Leaving focus mode", color = colors.streak)
-        Text("Sure you want to unlock?", style = MaterialTheme.typography.titleLarge)
+        Text(
+            "Sure you want to unlock?",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
         Stats(session)
         Text("Type this code to unlock", style = MaterialTheme.typography.bodyMedium, color = colors.muted)
         Text(
@@ -234,7 +239,11 @@ private fun Stats(session: FocusSession) {
 @Composable
 private fun Stat(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, style = MaterialTheme.typography.titleMedium.copy(fontFamily = Lecture.mono))
+        Text(
+            value,
+            style = MaterialTheme.typography.titleMedium.copy(fontFamily = Lecture.mono),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
         MonoLabel(label)
     }
 }

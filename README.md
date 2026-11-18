@@ -8,6 +8,7 @@ What each feature does for the student is described in [`docs/features/`](docs/f
 - [Slide presenter](docs/features/slide-presenter.md)
 - [Per-slide notes](docs/features/per-slide-notes.md)
 - [Dictionary](docs/features/dictionary.md)
+- [Mindmap](docs/features/mindmap.md)
 - [Todos](docs/features/todos.md)
 - [Local insta-search](docs/features/local-search.md)
 - [Next features (deferred)](docs/features/deferred.md)

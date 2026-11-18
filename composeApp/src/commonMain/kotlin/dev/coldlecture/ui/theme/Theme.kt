@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -146,7 +147,13 @@ fun ColdLectureTheme(dark: Boolean, content: @Composable () -> Unit) {
         labelMedium = TextStyle(fontFamily = mono, fontSize = 11.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.6.sp),
         labelSmall = TextStyle(fontFamily = mono, fontSize = 10.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.8.sp),
     )
-    CompositionLocalProvider(LocalLectureColors provides lecture, LocalMonoFamily provides mono) {
+    // Panels use raw backgrounds (not Material Surface), so LocalContentColor would
+    // otherwise stay at its default black and vanish on dark panels.
+    CompositionLocalProvider(
+        LocalLectureColors provides lecture,
+        LocalMonoFamily provides mono,
+        LocalContentColor provides scheme.onSurface,
+    ) {
         MaterialTheme(colorScheme = scheme, typography = typography, content = content)
     }
 }

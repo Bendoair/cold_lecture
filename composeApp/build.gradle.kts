@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.compose.components.resources)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.room.runtime)
+            implementation(libs.kuiver)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -85,7 +85,11 @@ fun TodoDrawer(
     ) {
         Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 6.dp, top = 10.dp, bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("After class", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "After class",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 MonoLabel("$open open · $doneCount done")
             }
             if (doneCount > 0) {

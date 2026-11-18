@@ -31,6 +31,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -91,8 +92,26 @@ fun SlideHeader(
 ) {
     var menuOpen by remember { mutableStateOf(false) }
     var filter by remember { mutableStateOf("") }
+    var editing by remember { mutableStateOf<LectureDeck?>(null) }
     val deck = controller.activeDeck
     val colors = Lecture.colors
+    editing?.let { target ->
+        DeckOrganizeDialog(
+            heading = "Organize deck",
+            draft = DeckOrganizeDraft(
+                title = target.title,
+                courseCode = target.courseCode,
+                courseTitle = target.courseTitle,
+            ),
+            knownCourses = knownCoursesFrom(decks),
+            confirmLabel = "Save",
+            onConfirm = { draft ->
+                controller.updateDeckDetails(target, draft.title, draft.courseCode, draft.courseTitle)
+                editing = null
+            },
+            onDismiss = { editing = null },
+        )
+    }
     Row(
         modifier.padding(horizontal = 14.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -126,6 +145,7 @@ fun SlideHeader(
                 expanded = menuOpen,
                 onDismissRequest = { menuOpen = false },
                 modifier = Modifier.widthIn(min = 320.dp, max = 420.dp),
+                containerColor = colors.panel,
             ) {
                 DeckPickerContent(
                     decks = decks,
@@ -136,6 +156,10 @@ fun SlideHeader(
                     onSelect = {
                         menuOpen = false
                         controller.openDeck(it)
+                    },
+                    onEdit = {
+                        menuOpen = false
+                        editing = it
                     },
                     onRemove = {
                         controller.removeDeck(it, decks)
@@ -183,6 +207,7 @@ private fun DeckPickerContent(
     onFilterChange: (String) -> Unit,
     importing: Boolean,
     onSelect: (LectureDeck) -> Unit,
+    onEdit: (LectureDeck) -> Unit,
     onRemove: (LectureDeck) -> Unit,
     onImport: () -> Unit,
 ) {
@@ -250,6 +275,7 @@ private fun DeckPickerContent(
                             item = item,
                             selected = item.id == activeId,
                             onSelect = { onSelect(item) },
+                            onEdit = { onEdit(item) },
                             onRemove = { onRemove(item) },
                         )
                     }
@@ -281,6 +307,7 @@ private fun DeckPickerRow(
     item: LectureDeck,
     selected: Boolean,
     onSelect: () -> Unit,
+    onEdit: () -> Unit,
     onRemove: () -> Unit,
 ) {
     val colors = Lecture.colors
@@ -308,6 +335,7 @@ private fun DeckPickerRow(
                 color = colors.muted,
             )
         }
+        IconAction(Icons.Default.Edit, "Organize ${item.title}", onClick = onEdit, size = 28.dp)
         IconAction(Icons.Default.Delete, "Remove ${item.title}", onClick = onRemove, size = 28.dp)
     }
 }

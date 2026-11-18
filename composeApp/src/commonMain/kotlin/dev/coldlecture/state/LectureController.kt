@@ -20,6 +20,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+/** File already stored on disk; waiting for title/course before it becomes a deck. */
+data class PendingDeckImport(
+    val id: String,
+    val suggestedTitle: String,
+    val pageCount: Int,
+)
+
 /** Active deck, current page, rendered page cache and per-page text used by local search. */
 class LectureController(
     private val repos: Repositories,
@@ -38,6 +45,8 @@ class LectureController(
     var error by mutableStateOf<String?>(null)
         private set
     var importing by mutableStateOf(false)
+        private set
+    var pendingImport by mutableStateOf<PendingDeckImport?>(null)
         private set
 
     val pageCount: Int get() = document?.pageCount ?: activeDeck?.pageCount ?: 0
@@ -105,8 +114,8 @@ class LectureController(
         return bitmap
     }
 
-    fun importDeck(onImported: (LectureDeck) -> Unit = {}) {
-        if (importing) return
+    fun importDeck() {
+        if (importing || pendingImport != null) return
         scope.launch {
             importing = true
             error = null
@@ -114,24 +123,50 @@ class LectureController(
             try {
                 val id = "deck-" + nowMillis().toString(36) + "-" + Random.nextInt(0, 1 shl 20).toString(36)
                 val imported = deckFiles.pickAndStore(id) ?: return@launch
-                val deck = LectureDeck(
+                pendingImport = PendingDeckImport(
                     id = id,
-                    title = imported.fileName.removeSuffix(".pdf").removeSuffix(".PDF"),
-                    courseCode = activeDeck?.courseCode ?: "COURSE",
-                    courseTitle = activeDeck?.courseTitle ?: "Imported lecture",
-                    source = DeckSource.IMPORTED,
+                    suggestedTitle = imported.fileName.removeSuffix(".pdf").removeSuffix(".PDF"),
                     pageCount = imported.pageCount,
-                    createdAt = nowMillis(),
                 )
-                repos.decks.add(deck)
-                openDeck(deck)
-                onImported(deck)
             } catch (t: Throwable) {
                 error = "Import failed: ${t.message ?: t::class.simpleName}"
             } finally {
                 focus.suppressPresence = false
                 importing = false
             }
+        }
+    }
+
+    fun confirmImport(title: String, courseCode: String, courseTitle: String) {
+        val pending = pendingImport ?: return
+        scope.launch {
+            val deck = LectureDeck(
+                id = pending.id,
+                title = title.trim().ifEmpty { pending.suggestedTitle },
+                courseCode = courseCode.trim().ifEmpty { "COURSE" },
+                courseTitle = courseTitle.trim().ifEmpty { "Imported lecture" },
+                source = DeckSource.IMPORTED,
+                pageCount = pending.pageCount,
+                createdAt = nowMillis(),
+            )
+            repos.decks.add(deck)
+            pendingImport = null
+            openDeck(deck)
+        }
+    }
+
+    fun cancelImport() {
+        val pending = pendingImport ?: return
+        pendingImport = null
+        scope.launch {
+            runCatching { deckFiles.deleteStored(pending.id) }
+        }
+    }
+
+    fun updateDeckDetails(deck: LectureDeck, title: String, courseCode: String, courseTitle: String) {
+        scope.launch {
+            val updated = repos.decks.updateDetails(deck, title, courseCode, courseTitle)
+            if (activeDeck?.id == updated.id) activeDeck = updated
         }
     }
 

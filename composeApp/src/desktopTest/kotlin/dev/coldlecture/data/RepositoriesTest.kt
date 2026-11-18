@@ -142,4 +142,20 @@ class RepositoriesTest {
         repos.decks.setLastPage(SAMPLE_DECK_ID, 4)
         assertEquals(4, repos.decks.decks.first().single().lastPage)
     }
+
+    @Test
+    fun deckUpdateDetailsRenamesAndRegroups() = runTest {
+        insertSampleDeck()
+        val deck = repos.decks.decks.first().single()
+        val updated = repos.decks.updateDetails(
+            deck,
+            title = " Stokes review ",
+            courseCode = " mat-401 ",
+            courseTitle = " Advanced calculus ",
+        )
+        assertEquals("Stokes review", updated.title)
+        assertEquals("mat-401", updated.courseCode)
+        assertEquals("Advanced calculus", updated.courseTitle)
+        assertEquals(updated, repos.decks.decks.first().single())
+    }
 }

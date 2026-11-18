@@ -44,7 +44,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -75,6 +74,8 @@ fun TopBar(
     compact: Boolean,
     sidebarVisible: Boolean,
     onToggleSidebar: () -> Unit,
+    mainView: MainView,
+    onMainViewChange: (MainView) -> Unit,
     animals: Boolean,
     theme: ThemePreference,
     onThemeChange: (ThemePreference) -> Unit,
@@ -125,6 +126,7 @@ fun TopBar(
                 Text(
                     deck.courseTitle.uppercase(),
                     style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.widthIn(max = 340.dp),
@@ -136,7 +138,7 @@ fun TopBar(
         }
         StreakChip(session)
         Box(Modifier.weight(1f))
-        if (!compact) ViewToggle()
+        if (!compact) ViewToggle(mainView = mainView, onMainViewChange = onMainViewChange)
         IconAction(
             Icons.Default.Menu,
             if (sidebarVisible) "Hide side panel" else "Show side panel",
@@ -211,7 +213,10 @@ private fun StreakChip(session: FocusSession) {
 }
 
 @Composable
-private fun ViewToggle() {
+private fun ViewToggle(
+    mainView: MainView,
+    onMainViewChange: (MainView) -> Unit,
+) {
     val colors = Lecture.colors
     Row(
         Modifier
@@ -220,19 +225,20 @@ private fun ViewToggle() {
             .border(1.dp, colors.hairline, RoundedCornerShape(8.dp))
             .padding(2.dp),
     ) {
-        listOf("Slides" to true, "Split" to false, "Mindmap" to false).forEach { (label, available) ->
-            val active = label == "Slides"
+        MainView.entries.forEach { view ->
+            val active = view == mainView
+            val label = when (view) {
+                MainView.Slides -> "Slides"
+                MainView.Mindmap -> "Mindmap"
+            }
             Text(
                 label,
                 style = MaterialTheme.typography.labelLarge,
-                color = when {
-                    active -> Color.White
-                    else -> colors.muted
-                },
+                color = if (active) Color.White else colors.muted,
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
                     .background(if (active) colors.accent else Color.Transparent)
-                    .alpha(if (available) 1f else 0.5f)
+                    .clickable { onMainViewChange(view) }
                     .padding(horizontal = 10.dp, vertical = 4.dp),
             )
         }
@@ -256,6 +262,7 @@ private fun SettingsMenu(
             expanded = open,
             onDismissRequest = { open = false },
             modifier = Modifier.width(300.dp),
+            containerColor = colors.panel,
         ) {
             Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 MonoLabel("Appearance")
@@ -263,7 +270,12 @@ private fun SettingsMenu(
 
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Text("Interactivity", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                        Text(
+                            "Interactivity",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f),
+                        )
                         Text(
                             "$interactivity%",
                             style = MaterialTheme.typography.labelMedium,
@@ -306,7 +318,11 @@ private fun SettingsMenu(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     Column(Modifier.weight(1f)) {
-                        Text("Animals", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            "Animals",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                         Text("Colab-style companions", style = MaterialTheme.typography.labelSmall, color = colors.muted)
                     }
                     Switch(
@@ -322,11 +338,6 @@ private fun SettingsMenu(
                     )
                 }
 
-                Text(
-                    "Split & Mindmap views arrive later",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colors.muted,
-                )
             }
         }
     }

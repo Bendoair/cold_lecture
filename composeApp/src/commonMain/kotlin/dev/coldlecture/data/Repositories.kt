@@ -9,6 +9,22 @@ class DeckRepository(private val dao: DeckDao, private val notes: NoteDao) {
     val decks: Flow<List<LectureDeck>> = dao.observeAll()
 
     suspend fun add(deck: LectureDeck) = dao.upsert(deck)
+
+    suspend fun updateDetails(
+        deck: LectureDeck,
+        title: String,
+        courseCode: String,
+        courseTitle: String,
+    ): LectureDeck {
+        val updated = deck.copy(
+            title = title.trim().ifEmpty { deck.title },
+            courseCode = courseCode.trim().ifEmpty { "COURSE" },
+            courseTitle = courseTitle.trim().ifEmpty { "Lecture" },
+        )
+        dao.upsert(updated)
+        return updated
+    }
+
     suspend fun setLastPage(deckId: String, page: Int) = dao.setLastPage(deckId, page)
     suspend fun setPageCount(deckId: String, pageCount: Int) = dao.setPageCount(deckId, pageCount)
 

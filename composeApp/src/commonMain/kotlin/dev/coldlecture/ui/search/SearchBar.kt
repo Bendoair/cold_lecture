@@ -185,7 +185,13 @@ private fun ResultRow(hit: SearchHit, onClick: () -> Unit) {
             modifier = Modifier.widthIn(min = 44.dp).padding(top = 2.dp),
         )
         Column(Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                title,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
             if (snippet.isNotBlank()) {
                 Text(snippet, style = MaterialTheme.typography.bodySmall, color = colors.muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }

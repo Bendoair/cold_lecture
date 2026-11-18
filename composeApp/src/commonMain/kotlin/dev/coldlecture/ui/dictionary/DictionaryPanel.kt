@@ -219,6 +219,7 @@ private fun EntryDetail(
             Text(
                 entry.term,
                 style = MaterialTheme.typography.titleMedium.copy(fontFamily = Lecture.mono),
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f).padding(start = 4.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -245,6 +246,7 @@ private fun EntryDetail(
                     Text(
                         other.term,
                         style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.clickable { onOpen(other.id) }.padding(start = 8.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
                     )
                     IconAction(Icons.Default.Close, "Unlink ${other.term}", onClick = { onUnlink(other.id) }, size = 20.dp)
@@ -252,14 +254,24 @@ private fun EntryDetail(
             }
             Box {
                 Pill("Link", icon = Icons.Default.Add, onClick = { linkMenu = true })
-                DropdownMenu(expanded = linkMenu, onDismissRequest = { linkMenu = false }) {
+                DropdownMenu(
+                    expanded = linkMenu,
+                    onDismissRequest = { linkMenu = false },
+                    containerColor = colors.panel,
+                ) {
                     val candidates = entries.filter { it.id != entry.id && it.id !in linked }
                     if (candidates.isEmpty()) {
                         DropdownMenuItem(text = { Text("Nothing left to link", color = colors.muted) }, onClick = { linkMenu = false }, enabled = false)
                     }
                     candidates.forEach { candidate ->
                         DropdownMenuItem(
-                            text = { Text(candidate.term, style = MaterialTheme.typography.bodyMedium) },
+                            text = {
+                                Text(
+                                    candidate.term,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            },
                             onClick = {
                                 linkMenu = false
                                 onLink(candidate.id)

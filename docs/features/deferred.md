@@ -2,10 +2,6 @@
 
 These are planned but not part of the first release. Each entry says **what** the feature would be for the student. It does not describe how to build it. Some already have a visible but inactive placeholder in the interface.
 
-## Mindmap graph
-
-A visual map of the student's dictionary: terms as nodes, linked concepts as connections. The student can pan, zoom and follow the threads they built up during the term, and spot isolated concepts that have nothing linked to them yet. It complements the dictionary list rather than replacing it, and opens from the *Mindmap* toggle in the top bar (with a *Split* view showing slides and map side by side). Every link made in the dictionary today will appear in it.
-
 ## Games
 
 Short, deliberate break activities reachable from the **games** button in the bottom bar. They are meant to release focus pressure for a minute or two without leaving the lecture app entirely, and to end on their own so the student drifts back to the slide rather than away from it. Ideally they reuse what was just taught, for example a quick match-the-term round drawn from the dictionary.

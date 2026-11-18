@@ -61,12 +61,16 @@ import dev.coldlecture.ui.components.IconAction
 import dev.coldlecture.ui.dictionary.DictionaryBody
 import dev.coldlecture.ui.dictionary.DictionaryUiState
 import dev.coldlecture.ui.focus.FocusOverlays
+import dev.coldlecture.ui.mindmap.MindmapView
 import dev.coldlecture.ui.notes.NotesBody
 import dev.coldlecture.ui.search.SearchBar
 import dev.coldlecture.ui.search.SearchResults
+import dev.coldlecture.ui.slides.DeckOrganizeDialog
+import dev.coldlecture.ui.slides.DeckOrganizeDraft
 import dev.coldlecture.ui.slides.MIN_ZOOM
 import dev.coldlecture.ui.slides.SlideHeader
 import dev.coldlecture.ui.slides.SlideViewer
+import dev.coldlecture.ui.slides.knownCoursesFrom
 import dev.coldlecture.ui.theme.Lecture
 import dev.coldlecture.ui.todos.TodoDrawer
 import kotlinx.coroutines.delay
@@ -102,6 +106,15 @@ fun LectureShell(
     var todosOpen by remember { mutableStateOf(false) }
     var zoom by remember { mutableStateOf(MIN_ZOOM) }
     var sidebarPreference by remember { mutableStateOf<Boolean?>(null) }
+    var mainView by remember { mutableStateOf(MainView.Slides) }
+
+    fun openTerm(entryId: Long) {
+        dictState.creating = false
+        dictState.editing = null
+        dictState.selectedId = entryId
+        dictExpanded = true
+        sidebarPreference = true
+    }
 
     val deck = controller.activeDeck
     LaunchedEffect(deck?.id, controller.page) {
@@ -125,13 +138,7 @@ fun LectureShell(
         when (hit) {
             is SearchHit.Slide -> controller.goTo(hit.pageIndex)
             is SearchHit.Note -> decks.firstOrNull { it.id == hit.deckId }?.let { controller.openDeck(it, hit.pageIndex) }
-            is SearchHit.Term -> {
-                dictState.creating = false
-                dictState.editing = null
-                dictState.selectedId = hit.entryId
-                dictExpanded = true
-                sidebarPreference = true
-            }
+            is SearchHit.Term -> openTerm(hit.entryId)
         }
         search.clear()
         if (hit !is SearchHit.Term) runCatching { viewerFocus.requestFocus() }
@@ -153,6 +160,10 @@ fun LectureShell(
                         search.clear()
                         true
                     }
+                    event.key == Key.Escape && controller.pendingImport != null -> {
+                        controller.cancelImport()
+                        true
+                    }
                     event.key == Key.Escape && todosOpen -> {
                         todosOpen = false
                         true
@@ -161,6 +172,22 @@ fun LectureShell(
                 }
             },
     ) {
+        controller.pendingImport?.let { pending ->
+            DeckOrganizeDialog(
+                heading = "Organize imported deck",
+                draft = DeckOrganizeDraft(
+                    title = pending.suggestedTitle,
+                    courseCode = deck?.courseCode ?: "",
+                    courseTitle = deck?.courseTitle ?: "",
+                ),
+                knownCourses = knownCoursesFrom(decks),
+                confirmLabel = "Add deck",
+                onConfirm = { draft ->
+                    controller.confirmImport(draft.title, draft.courseCode, draft.courseTitle)
+                },
+                onDismiss = controller::cancelImport,
+            )
+        }
         val compact = maxWidth < CompactWidth
         val sidebarVisible = sidebarPreference ?: !compact
         val searchDismissible = search.open
@@ -201,6 +228,8 @@ fun LectureShell(
                 compact = compact,
                 sidebarVisible = sidebarVisible,
                 onToggleSidebar = { sidebarPreference = !sidebarVisible },
+                mainView = mainView,
+                onMainViewChange = { mainView = it },
                 animals = animals,
                 theme = theme,
                 onThemeChange = onThemeChange,
@@ -210,39 +239,58 @@ fun LectureShell(
             )
             Row(Modifier.weight(1f).fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Box(Modifier.weight(1f).fillMaxHeight()) {
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Lecture.colors.panel),
-                    ) {
-                        SlideHeader(controller, decks, zoom, onZoomChange = { zoom = it }, modifier = Modifier.fillMaxWidth())
-                        SlideViewer(controller, zoom, viewerFocus, Modifier.weight(1f).fillMaxWidth())
-                        SearchBar(
-                            search = search,
-                            focusRequester = searchFocus,
-                            shortcutLabel = "Alt+K",
-                            onSubmitFirst = { search.results.firstOrNull()?.let(::openHit) },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                    if (searchDismissible) {
-                        Box(
-                            Modifier
-                                .matchParentSize()
-                                .padding(bottom = 54.dp)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = search::clear,
-                                ),
-                        )
-                    }
-                    SearchResultsPopup(
-                        visible = search.open && search.query.isNotBlank(),
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(start = 14.dp, end = 14.dp, bottom = 62.dp),
-                    ) {
-                        SearchResults(search, onSelect = ::openHit)
+                    when (mainView) {
+                        MainView.Slides -> {
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Lecture.colors.panel),
+                            ) {
+                                SlideHeader(controller, decks, zoom, onZoomChange = { zoom = it }, modifier = Modifier.fillMaxWidth())
+                                SlideViewer(controller, zoom, viewerFocus, Modifier.weight(1f).fillMaxWidth())
+                                SearchBar(
+                                    search = search,
+                                    focusRequester = searchFocus,
+                                    shortcutLabel = "Alt+K",
+                                    onSubmitFirst = { search.results.firstOrNull()?.let(::openHit) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
+                            }
+                            if (searchDismissible) {
+                                Box(
+                                    Modifier
+                                        .matchParentSize()
+                                        .padding(bottom = 54.dp)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
+                                            onClick = search::clear,
+                                        ),
+                                )
+                            }
+                            SearchResultsPopup(
+                                visible = search.open && search.query.isNotBlank(),
+                                modifier = Modifier.align(Alignment.BottomCenter).padding(start = 14.dp, end = 14.dp, bottom = 62.dp),
+                            ) {
+                                SearchResults(search, onSelect = ::openHit)
+                            }
+                        }
+                        MainView.Mindmap -> {
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Lecture.colors.panel),
+                            ) {
+                                MindmapView(
+                                    entries = entries,
+                                    links = links,
+                                    onSelectTerm = ::openTerm,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                        }
                     }
                 }
                 if (sidebarVisible && !compact) {
