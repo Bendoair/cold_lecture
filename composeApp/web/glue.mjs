@@ -75,10 +75,10 @@ export async function pdfPageText(handle, pageIndex) {
 
 export function pdfClose(handle) {
     const doc = documents.get(handle);
-    if (doc) {
-        doc.destroy();
-        documents.delete(handle);
-    }
+    if (!doc) return;
+    documents.delete(handle);
+    // pdf.js v6: destroy lives on the loading task, not PDFDocumentProxy.
+    void doc.loadingTask.destroy();
 }
 
 // Resolves to the picked file name, or null when the dialog is dismissed.
@@ -108,11 +108,22 @@ export async function importPickedFile(deckId) {
     if (!pickedFile) throw new Error('No file picked');
     const bytes = new Uint8Array(await pickedFile.arrayBuffer());
     pickedFile = null;
-    const doc = await getDocument({ data: bytes.slice() }).promise;
-    const pageCount = doc.numPages;
-    doc.destroy();
-    await saveDeckBytes(deckId, bytes);
-    return pageCount;
+    const loadingTask = getDocument({ data: bytes.slice() });
+    try {
+        const doc = await loadingTask.promise;
+        const pageCount = doc.numPages;
+        await loadingTask.destroy();
+        await saveDeckBytes(deckId, bytes);
+        return pageCount;
+    } catch (error) {
+        // Ensure the worker is torn down even when parsing fails.
+        try {
+            await loadingTask.destroy();
+        } catch (_) {
+            // already destroyed / never started
+        }
+        throw error;
+    }
 }
 
 async function decksDirectory() {
