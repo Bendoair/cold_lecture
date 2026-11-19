@@ -20,8 +20,11 @@ import dev.coldlecture.ui.App
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.painterResource
 import java.awt.Frame
+import java.awt.event.ComponentAdapter
+import java.awt.event.ComponentEvent
 import java.awt.event.WindowEvent
 import java.awt.event.WindowFocusListener
+import java.awt.event.WindowStateListener
 import java.io.File
 
 fun main() {
@@ -51,13 +54,29 @@ fun main() {
             alwaysOnTop = focus.locked,
         ) {
             frameRef[0] = window
+            focus.window = window
             DisposableEffect(window) {
-                val listener = object : WindowFocusListener {
+                val focusListener = object : WindowFocusListener {
                     override fun windowGainedFocus(e: WindowEvent) = focus.onWindowFocusChanged(true)
                     override fun windowLostFocus(e: WindowEvent) = focus.onWindowFocusChanged(false)
                 }
-                window.addWindowFocusListener(listener)
-                onDispose { window.removeWindowFocusListener(listener) }
+                val stateListener = WindowStateListener {
+                    focus.onPlacementChanged(window.placement)
+                }
+                val componentListener = object : ComponentAdapter() {
+                    override fun componentResized(e: ComponentEvent) {
+                        focus.onPlacementChanged(window.placement)
+                    }
+                }
+                window.addWindowFocusListener(focusListener)
+                window.addWindowStateListener(stateListener)
+                window.addComponentListener(componentListener)
+                onDispose {
+                    focus.window = null
+                    window.removeWindowFocusListener(focusListener)
+                    window.removeWindowStateListener(stateListener)
+                    window.removeComponentListener(componentListener)
+                }
             }
             App(platform)
         }
